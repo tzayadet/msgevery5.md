@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MsgEvery5</title>
+<style>
+:root{--bg:#000802;--card:rgba(0,16,6,.82);--ink:#c8ffd6;--mute:#5fbf7a;--line:#0b5d22;--acc:#00ff41;--accink:#001a07;--code:#000a03;--codeink:#7dff9f;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font:15px/1.55 ui-monospace,"Cascadia Code",Menlo,Consolas,monospace;min-height:100vh;position:relative}
+#rain{position:fixed;inset:0;z-index:0;opacity:.35;pointer-events:none}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.75))}
+main{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:34px 18px 60px}
+.jp{color:var(--mute);letter-spacing:.35em;font-size:12px;text-transform:uppercase}
+h1{position:relative;font-size:clamp(40px,10vw,68px);margin:6px 0 4px;letter-spacing:.04em;color:var(--acc);text-shadow:0 0 8px var(--acc),0 0 28px rgba(0,255,65,.55);font-weight:800;line-height:1.05}
+h1::before,h1::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;overflow:hidden}
+h1::before{color:#00ffd5;transform:translate(2px,0);clip-path:inset(0 0 62% 0);animation:gl 3.2s infinite steps(1);text-shadow:none;opacity:.7}
+h1::after{color:#b6ff00;transform:translate(-2px,0);clip-path:inset(60% 0 0 0);animation:gl 2.6s infinite steps(1) reverse;text-shadow:none;opacity:.6}
+@keyframes gl{0%,90%{transform:translate(0)}92%{transform:translate(3px,-1px)}95%{transform:translate(-3px,1px)}100%{transform:translate(0)}}
+@media (prefers-reduced-motion:reduce){h1::before,h1::after{animation:none}}
+.sub{margin:0 0 26px;font-size:17px;color:var(--ink)}
+.sub::before{content:"> ";color:var(--acc)}
+.sub::after{content:"_";color:var(--acc);animation:bl 1s infinite steps(1)}
+@keyframes bl{50%{opacity:0}}
+.card{position:relative;background:var(--card);border:1px solid var(--line);padding:20px;margin-bottom:20px;backdrop-filter:blur(3px);box-shadow:0 0 18px rgba(0,255,65,.12),inset 0 0 22px rgba(0,255,65,.05);clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+.card::before{content:"";position:absolute;left:0;top:0;width:4px;height:100%;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+label{display:block;font-weight:700;font-size:13px;margin-bottom:6px;color:var(--acc);text-transform:uppercase;letter-spacing:.12em}
+label small{color:var(--mute);font-weight:400;letter-spacing:.2em;margin-left:6px}
+textarea,input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);background:#000d04;color:var(--ink);font:inherit;outline:none;border-radius:0}
+textarea:focus,input[type=number]:focus{border-color:var(--acc);box-shadow:0 0 10px rgba(0,255,65,.45)}
+textarea{resize:vertical;min-height:72px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-top:16px}
+.row>div{flex:1;min-width:150px}
+.chk{display:flex;gap:10px;align-items:center;margin:0;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:500;cursor:pointer}
+.chk input{accent-color:var(--acc);width:18px;height:18px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:8px 16px;border:1px solid var(--line);background:transparent;color:var(--mute);font:inherit;font-size:13px;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.tab:hover{color:var(--acc)}
+.tab[aria-selected=true]{background:var(--acc);color:var(--accink);font-weight:800;box-shadow:0 0 14px var(--acc)}
+pre{background:var(--code);color:var(--codeink);padding:14px;border:1px solid var(--line);overflow-x:auto;max-height:260px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;margin:0 0 14px;white-space:pre-wrap;word-break:break-all}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:11px 20px;border:1px solid var(--acc);background:transparent;color:var(--acc);font:inherit;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;text-decoration:none;display:inline-block;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:.15s}
+.btn:hover{background:rgba(0,255,65,.14);box-shadow:0 0 16px rgba(0,255,65,.6)}
+.btn.main{background:var(--acc);color:var(--accink)}
+.btn.main:hover{background:#6bff8d}
+.btn.main::before{content:"▶ "}
+ol{margin:0;padding-left:22px}ol li{margin:7px 0}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+kbd{background:#001a08;border:1px solid var(--line);color:var(--acc);padding:1px 6px;font-size:12.5px}
+.foot{text-align:center;color:var(--mute);font-size:11px;letter-spacing:.4em;margin-top:8px}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<main>
+  <div class="jp">メッセージ送信機 // AUTO-SEND SYSTEM</div>
+  <h1 data-t="MsgEvery5">MsgEvery5</h1>
+  <p class="sub">Drop your Message every Five</p>
+
+  <section class="card">
+    <label for="frase">frase =<small>言葉</small></label>
+    <textarea id="frase">ok, sigue mejorándolo, ampliando prestaciones y corrigiendo los errores</textarea>
+    <div class="row">
+      <div><label for="min">tiempo = (minutos)<small>時間</small></label><input id="min" type="number" min="0.1" step="0.5" value="5"></div>
+      <div><label class="chk"><input id="enter" type="checkbox" checked> Enviar (Enter) tras escribir</label></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-js" aria-selected="true">En el navegador</button>
+      <button class="tab" role="tab" id="t-py" aria-selected="false">Python</button>
+    </div>
+    <pre id="out"></pre>
+    <div class="btns">
+      <button class="btn main" id="copy">Copiar código</button>
+      <a class="btn" id="bm" href="#" draggable="true">⭐ Arrástrame a marcadores</a>
+    </div>
+    <div id="help-js">
+      <ol style="margin-top:16px">
+        <li>Abre la pestaña del chat de tu IA.</li>
+        <li>Pulsa <kbd>F12</kbd> → pestaña <b>Consola</b>, pega el código y pulsa Enter (si el navegador lo pide, escribe antes <kbd>permitir pegado</kbd>).</li>
+        <li>Para parar, vuelve a ejecutar el mismo código (actúa como interruptor) o recarga la pestaña.</li>
+      </ol>
+      <p class="note">Alternativa: arrastra el botón ⭐ a la barra de marcadores y púlsalo estando en el chat. Algunas webs bloquean los marcadores; la consola siempre funciona. La pestaña debe seguir abierta (si la minimizas, el navegador puede ralentizar el temporizador).</p>
+    </div>
+    <div id="help-py" hidden>
+      <ol style="margin-top:16px">
+        <li>Instala dependencias: <kbd>pip install pyautogui pyperclip</kbd></li>
+        <li>Guarda el código como <kbd>auto.py</kbd> y ejecútalo.</li>
+        <li>Durante la cuenta atrás de 10 s, haz clic en el cuadro de texto del chat. Parar: <kbd>Ctrl+C</kbd>.</li>
+      </ol>
+    </div>
+  </section>
+  <div class="foot">送 信 // SYSTEM ONLINE</div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let modo = "js";
+
+function codigoJS(frase, seg, enviar){
+  return `(()=>{if(window.__autoIA){clearInterval(window.__autoIA);window.__autoIA=null;console.log('Auto-envío detenido');return;}
+const F=${JSON.stringify(frase)},T=${seg}*1000,E=${enviar};
+const send=()=>{const a=document.activeElement;let el=a&&(a.isContentEditable||a.tagName==='TEXTAREA')?a:document.querySelector('div[contenteditable="true"],textarea');
+if(!el){console.warn('No encuentro el cuadro de texto');return;}
+el.focus();
+if(el.tagName==='TEXTAREA'){const s=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set;s.call(el,F);el.dispatchEvent(new Event('input',{bubbles:true}));}
+else{document.execCommand('selectAll');document.execCommand('insertText',false,F);}
+if(!E)return;
+setTimeout(()=>{const b=document.querySelector('button[data-testid="send-button"],button[aria-label*="Send" i],button[aria-label*="Enviar" i]');
+if(b&&!b.disabled)b.click();else el.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true}));},400);};
+send();window.__autoIA=setInterval(send,T);console.log('Auto-envío activo cada '+T/1000+'s. Ejecútalo de nuevo para parar.');})();`;
+}
+
+function codigoPy(frase, seg, enviar){
+  return `import time
+import pyautogui
+import pyperclip
+
+# ======== CONFIGURACIÓN ========
+frase = ${JSON.stringify(frase)}
+tiempo = ${seg}  # segundos entre envíos
+# ===============================
+
+ENVIAR_CON_ENTER = ${enviar ? "True" : "False"}
+CUENTA_ATRAS = 10
+pyautogui.FAILSAFE = True  # ratón a la esquina superior izquierda = abortar
+
+def escribir(texto):
+    pyperclip.copy(texto)
+    atajo = "command" if pyautogui.platform.system() == "Darwin" else "ctrl"
+    pyautogui.hotkey(atajo, "v")
+    time.sleep(0.3)
+    if ENVIAR_CON_ENTER:
+        pyautogui.press("enter")
+
+print(f"Haz clic en el chat. Empieza en {CUENTA_ATRAS}s...")
+time.sleep(CUENTA_ATRAS)
+try:
+    while True:
+        escribir(frase)
+        print(time.strftime("[%H:%M:%S] Enviado"))
+        time.sleep(tiempo)
+except KeyboardInterrupt:
+    print("Detenido.")
+`;
+}
+
+function render(){
+  const frase = $("frase").value;
+  const seg = Math.max(1, Math.round((parseFloat($("min").value) || 5) * 60));
+  const enviar = $("enter").checked;
+  const js = codigoJS(frase, seg, enviar);
+  $("out").textContent = modo === "js" ? js : codigoPy(frase, seg, enviar);
+  $("bm").href = "javascript:" + encodeURIComponent(js.replace(/\n/g, ""));
+}
+
+function setModo(m){
+  modo = m;
+  $("t-js").setAttribute("aria-selected", m === "js");
+  $("t-py").setAttribute("aria-selected", m === "py");
+  $("bm").style.display = m === "js" ? "" : "none";
+  $("help-js").hidden = m !== "js";
+  $("help-py").hidden = m !== "py";
+  render();
+}
+
+$("t-js").onclick = () => setModo("js");
+$("t-py").onclick = () => setModo("py");
+["frase","min","enter"].forEach(i => $(i).addEventListener("input", render));
+$("bm").addEventListener("click", e => e.preventDefault());
+
+$("copy").onclick = async () => {
+  const txt = $("out").textContent;
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) {
+    const t = document.createElement("textarea");
+    t.value = txt; document.body.appendChild(t); t.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    t.remove();
+  }
+  $("copy").textContent = "¡Copiado!";
+  setTimeout(() => $("copy").textContent = "Copiar código", 1500);
+};
+
+render();
+
+// lluvia katakana
+(function(){
+  const c = $("rain"), x = c.getContext("2d");
+  const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789";
+  let cols, drops, fs = 16;
+  function size(){ c.width = innerWidth; c.height = innerHeight; cols = Math.ceil(c.width / fs); drops = Array.from({length: cols}, () => Math.random() * -50); }
+  size(); addEventListener("resize", size);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  setInterval(() => {
+    x.fillStyle = "rgba(0,8,2,.12)"; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = "#00ff41"; x.font = fs + "px monospace";
+    drops.forEach((y, i) => {
+      x.fillText(chars[Math.floor(Math.random() * chars.length)], i * fs, y * fs);
+      if (y * fs > c.height && Math.random() > .975) drops[i] = 0; else drops[i] = y + 1;
+    });
+  }, 60);
+})();
+</script>
+</body>
+</html>
